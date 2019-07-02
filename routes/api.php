@@ -30,6 +30,7 @@ Route::group([], function () {
     Route::ApiResource(
         'categories', 
         'CategoriesController', 
-        ['except' => ['show', 'create', 'edit']]
+        ['except' => ['create', 'edit']]
     );
 });
+
