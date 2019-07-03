@@ -7,6 +7,8 @@ use App\Models\Item;
 use App\Models\Category;
 use App\Http\Requests\Item\StoreItemRequest;
 use App\Http\Requests\Item\IndexItemsRequest;
+use App\Http\Requests\Item\UpdateItemRequest;
+use Illuminate\Http\Response;
 
 class ItemsController extends Controller
 {
@@ -20,10 +22,29 @@ class ItemsController extends Controller
         );
     }
 
+    public function show(Item $i): JsonResource
+    {
+        return new JsonResource($i);
+    
+    }
+
     public function store(StoreItemRequest $request)
     {
         return new JsonResource(
             Item::create($request->validated())
         );
     }
+
+    public function update(UpdateItemRequest $request, Item $item): JsonResource
+    {
+        $item->update($request->validated());
+        return new JsonResource($item);
+    }
+
+    public function destroy(Item $item):Response
+    {
+        $item->delete();
+        return response()->noContent();
+    }
+
 }

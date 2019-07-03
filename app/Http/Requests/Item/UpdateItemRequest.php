@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Item;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class DisplayCategorybyId extends FormRequest
+class UpdateItemRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,10 @@ class DisplayCategorybyId extends FormRequest
     public function rules()
     {
         return [
-            'offset' => 'integer|min:0'
+            'category_id' => 'integer|min:1',
+            'name' => 'string|max:255',
+            'price' => 'integer|min:0',
+            'image' => 'string|max:255',
         ];
     }
 }
