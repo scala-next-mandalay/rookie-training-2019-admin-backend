@@ -26,4 +26,5 @@ class ItemsController extends Controller
             Item::create($request->validated())
         );
     }
+
 }
