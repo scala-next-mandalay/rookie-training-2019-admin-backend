@@ -14,9 +14,8 @@ class CategoryTest extends TestCase
      *
      * @return void
      */
-
     /** @test */
-     public function testExample()
+    public function testExample()
     {
         $exps = factory(Category::class, 2)->create();
  

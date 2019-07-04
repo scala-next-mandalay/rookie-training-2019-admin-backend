@@ -10,17 +10,17 @@ use App\Models\Category;
 
 class ItemTest extends TestCase
 {
-<<<<<<< HEAD
+
     //use RefreshDatabase;
-=======
+
     use RefreshDatabase;
->>>>>>> fb6186d52d32d48b48730975e91b2e272d9b6e6b
+
     /**
      * A basic feature test example.
      *
      * @return void
      */
-<<<<<<< HEAD
+
     public function testExample()
     {
         $response = $this->get('/');
@@ -28,7 +28,7 @@ class ItemTest extends TestCase
         $response->assertStatus(200);
     }
 
-=======
+
     // public function testExample()
     // {
     //     $response = $this->get('/');
@@ -37,7 +37,7 @@ class ItemTest extends TestCase
     // }
 
     /** @test */
->>>>>>> fb6186d52d32d48b48730975e91b2e272d9b6e6b
+
     public function everyone_can_get_rows()
     {
         $category =  factory(Category::class)->create();
@@ -139,8 +139,7 @@ class ItemTest extends TestCase
         $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//7
     }
 
-<<<<<<< HEAD
-=======
+
     /** @test */
     public function get_11th_to_20th_items_if_limit10_offset10_totalSize30()
    {
@@ -165,5 +164,4 @@ class ItemTest extends TestCase
           ]);
     }
 
->>>>>>> fb6186d52d32d48b48730975e91b2e272d9b6e6b
 }
