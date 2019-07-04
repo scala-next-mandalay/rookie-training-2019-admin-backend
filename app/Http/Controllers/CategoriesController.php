@@ -18,6 +18,12 @@ class CategoriesController extends Controller
             Category::orderBy('id')->get()
         );
     }
+
+    public function show(Category $category): JsonResource
+    {
+        return new JsonResource($category);
+    
+    }
     
     public function store(StoreCategoryRequest $request): JsonResource
     {

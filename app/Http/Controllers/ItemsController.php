@@ -20,10 +20,28 @@ class ItemsController extends Controller
         );
     }
 
+    public function show(Item $i): JsonResource
+    {
+        return new JsonResource($i);
+    
+    }
+
     public function store(StoreItemRequest $request)
     {
         return new JsonResource(
             Item::create($request->validated())
         );
     }
+
+     public function update(UpdateItemRequest $request, Item $item): JsonResource
+    {
+        $item->update($request->validated());
+        return new JsonResource($item);
+    }
+    public function destroy(Item $item):Response
+    {
+        $item->delete();
+        return response()->noContent();
+    }
+
 }
