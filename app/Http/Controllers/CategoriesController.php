@@ -19,7 +19,7 @@ class CategoriesController extends Controller
         );
     }
 
-        public function show(Category $category): JsonResource
+    public function show(Category $category): JsonResource
     {
         return new JsonResource($category);
     
