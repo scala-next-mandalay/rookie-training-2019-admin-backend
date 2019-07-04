@@ -25,7 +25,7 @@ Route::group([], function () {
     Route::ApiResource(
         'items', 
         'ItemsController', 
-        ['except' => ['show', 'create', 'edit']]
+        ['except' => ['create', 'edit']]
     );
     Route::ApiResource(
         'categories', 

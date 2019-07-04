@@ -7,6 +7,10 @@ use App\Models\Item;
 use App\Models\Category;
 use App\Http\Requests\Item\StoreItemRequest;
 use App\Http\Requests\Item\IndexItemsRequest;
+use App\Http\Requests\Item\UpdateItemRequest;
+use Illuminate\Http\Response;
+
+
 
 class ItemsController extends Controller
 {
