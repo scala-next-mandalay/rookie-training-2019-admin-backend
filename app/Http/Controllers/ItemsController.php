@@ -10,6 +10,8 @@ use App\Http\Requests\Item\IndexItemsRequest;
 use App\Http\Requests\Item\UpdateItemRequest;
 use Illuminate\Http\Response;
 
+
+
 class ItemsController extends Controller
 {
     public function index(IndexItemsRequest $request): ResourceCollection
@@ -35,12 +37,11 @@ class ItemsController extends Controller
         );
     }
 
-    public function update(UpdateItemRequest $request, Item $item): JsonResource
+     public function update(UpdateItemRequest $request, Item $item): JsonResource
     {
         $item->update($request->validated());
         return new JsonResource($item);
     }
-
     public function destroy(Item $item):Response
     {
         $item->delete();
