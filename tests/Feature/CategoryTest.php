@@ -81,8 +81,6 @@ class CategoryTest extends TestCase
             ]
         ]);
     }
-<<<<<<< HEAD
-=======
 
     
 //for show
@@ -130,7 +128,6 @@ class CategoryTest extends TestCase
 
  //For store 
 
->>>>>>> 7e17b623b4aca5833d249f8cee827193bbcf81db
     /** @test */
     public function add_row()
     {
@@ -152,9 +149,8 @@ class CategoryTest extends TestCase
         $this->assertLessThan(2, time() - strtotime($json['data']['created_at']));//3
         $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//4
     }
-<<<<<<< HEAD
-}
-=======
+
+
 
     /** @test */
     public function store_without_postData_will_occur_validation_error()
@@ -285,4 +281,3 @@ class CategoryTest extends TestCase
         $this->assertSoftDeleted('categories', ['id' => $row->id]);
     }
 }
->>>>>>> 7e17b623b4aca5833d249f8cee827193bbcf81db
