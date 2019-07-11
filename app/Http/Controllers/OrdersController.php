@@ -37,12 +37,4 @@ class OrdersController extends Controller
    		return new JsonResource($orderModel);
    	});
    }
-
-   public function index(): ResourceCollection
-    {
-        return JsonResource::collection(
-            Order::orderBy('id')->get()
-        );
-    }
-
 }
