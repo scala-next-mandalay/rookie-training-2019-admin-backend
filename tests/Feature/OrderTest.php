@@ -29,10 +29,12 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $order=factory(Order::class)->create();
-        $item = factory(Item::class)->create();
+        $item1 = factory(Item::class)->create();
+        $item2 = factory(Item::class)->create();
+        $item3 = factory(Item::class)->create();
         //$ord = factory(Order::class)->create();
         $res = $this->json('POST', self::API_PATH, [
-            'total_price' => 55555,
+            'total_price' => 5000,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
             'address1' => 'Mandalay',
@@ -40,10 +42,10 @@ class OrderTest extends TestCase
             'country' => 'Myanmar',
             'state' => 'Yaw',
             'city' => 'Htilin',
-            'order_id'=>[$order->id],
-            'item_id_array'=>[$item->id],
-            'item_qty_array'=>[3],
-            'item_price_array'=>[999],
+            'order_id'=>'$order->id',
+            'item_id_array'=>[$item1->id,$item2->id,$item3->id],
+            'item_qty_array'=>[3,5,2],
+            'item_price_array'=>[1500,1500,2000],
         ]);
         $res->assertStatus(201);
         $res->assertJsonCount(12, 'data');
@@ -63,16 +65,16 @@ class OrderTest extends TestCase
             ]
         ]);
         $json = $res->json();//1 is id
-        $this->assertEquals(55555, $json['data']['total_price']);//3
-        $this->assertEquals('Wai', $json['data']['first_name']);//4
-        $this->assertEquals('Phyo', $json['data']['last_name']);//5
+        $this->assertEquals(5000, $json['data']['total_price']);//2
+        $this->assertEquals('Wai', $json['data']['first_name']);//3
+        $this->assertEquals('Phyo', $json['data']['last_name']);//4
         $this->assertEquals('Mandalay', $json['data']['address1']);//5
-        $this->assertEquals('pku', $json['data']['address2']);//5
-        $this->assertEquals('Myanmar', $json['data']['country']);//5
-        $this->assertEquals('Yaw', $json['data']['state']);//5
-        $this->assertEquals('Htilin', $json['data']['city']);//5
-        $this->assertLessThan(2, time() - strtotime($json['data']['created_at']));//6
-        $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//7
+        $this->assertEquals('pku', $json['data']['address2']);//6
+        $this->assertEquals('Myanmar', $json['data']['country']);//7
+        $this->assertEquals('Yaw', $json['data']['state']);//8
+        $this->assertEquals('Htilin', $json['data']['city']);//9
+        $this->assertLessThan(2, time() - strtotime($json['data']['created_at']));//10
+        $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//11
     }
     
     /** @test */
