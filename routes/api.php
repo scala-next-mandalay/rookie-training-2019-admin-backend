@@ -32,5 +32,6 @@ Route::group([], function () {
         'CategoriesController', 
         ['except' => ['create', 'edit']]
     );
+    Route::apiResource('orders', 'OrdersController')->only(['store','index']);
 });
 
