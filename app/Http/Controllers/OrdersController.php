@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Orderitem;
 use App\Http\Requests\Order\StoreOrderRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OrdersController extends Controller
 {
@@ -32,7 +33,16 @@ class OrdersController extends Controller
    			];
    			$dump[]=Orderitem::create($itemArr);
    		}
+   		$orderModel->Orderitem=$dump;
    		return new JsonResource($orderModel);
    	});
    }
+
+   public function index(): ResourceCollection
+    {
+        return JsonResource::collection(
+            Order::orderBy('id')->get()
+        );
+    }
+
 }

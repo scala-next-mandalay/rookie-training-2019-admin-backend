@@ -6,6 +6,8 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Item;
+use App\Models\Order;
+use App\Models\Orderitem;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\QueryException;
 
@@ -26,8 +28,9 @@ class OrderTest extends TestCase
     public function on_store_order_success()
     {
         //echo "This..............................................";
+        $order=factory(Order::class)->create();
         $item = factory(Item::class)->create();
-        
+        //$ord = factory(Order::class)->create();
         $res = $this->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
@@ -37,12 +40,13 @@ class OrderTest extends TestCase
             'country' => 'Myanmar',
             'state' => 'Yaw',
             'city' => 'Htilin',
+            'order_id'=>[$order->id],
             'item_id_array'=>[$item->id],
             'item_qty_array'=>[3],
             'item_price_array'=>[999],
         ]);
         $res->assertStatus(201);
-        $res->assertJsonCount(11, 'data');
+        $res->assertJsonCount(12, 'data');
         $res->assertJsonStructure([
             'data' => [
                 'id',

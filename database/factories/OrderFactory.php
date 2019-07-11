@@ -8,7 +8,7 @@ use App\Models\Order;
 use App\Models\Orderitem;
 use App\Models\Item;
 
-$factory->define(Model::class, function (Faker $faker) {
+$factory->define(Order::class, function (Faker $faker) {
 	$word = $faker->word();
     return [
         'total_price'=>$faker->numberBetween($min = 100, $max = 100000),
