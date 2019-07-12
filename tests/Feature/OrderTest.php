@@ -28,7 +28,10 @@ class OrderTest extends TestCase
     public function on_store_order_success()
     {
         //echo "This..............................................";
+<<<<<<< HEAD
         $order=factory(Order::class)->create();
+=======
+>>>>>>> 119f2d0b11896ba30f062dcc3e36e7a609c182e1
         $item1 = factory(Item::class)->create();
         $item2 = factory(Item::class)->create();
         $item3 = factory(Item::class)->create();
@@ -42,7 +45,10 @@ class OrderTest extends TestCase
             'country' => 'Myanmar',
             'state' => 'Yaw',
             'city' => 'Htilin',
+<<<<<<< HEAD
             'order_id'=>'$order->id',
+=======
+>>>>>>> 119f2d0b11896ba30f062dcc3e36e7a609c182e1
             'item_id_array'=>[$item1->id,$item2->id,$item3->id],
             'item_qty_array'=>[3,5,2],
             'item_price_array'=>[1500,1500,2000],
@@ -75,6 +81,29 @@ class OrderTest extends TestCase
         $this->assertEquals('Htilin', $json['data']['city']);//9
         $this->assertLessThan(2, time() - strtotime($json['data']['created_at']));//10
         $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//11
+<<<<<<< HEAD
+=======
+
+        
+         $this->assertEquals($item1->id,$json['data']['Orderitem'][0]['item_id']);
+         $this->assertEquals(3,$json['data']['Orderitem'][0]['quantity']);
+         $this->assertEquals(1500,$json['data']['Orderitem'][0]['unit_price']);
+         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][0]['created_at']));
+         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][0]['updated_at']));
+         
+
+         $this->assertEquals($item2->id,$json['data']['Orderitem'][1]['item_id']);
+         $this->assertEquals(5,$json['data']['Orderitem'][1]['quantity']);
+         $this->assertEquals(1500,$json['data']['Orderitem'][1]['unit_price']);
+         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][1]['created_at']));
+         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][1]['updated_at']));
+
+         $this->assertEquals($item3->id,$json['data']['Orderitem'][2]['item_id']);
+         $this->assertEquals(2,$json['data']['Orderitem'][2]['quantity']);
+         $this->assertEquals(2000,$json['data']['Orderitem'][2]['unit_price']);
+         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['created_at']));
+         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['updated_at']));
+>>>>>>> 119f2d0b11896ba30f062dcc3e36e7a609c182e1
     }
     
     /** @test */
