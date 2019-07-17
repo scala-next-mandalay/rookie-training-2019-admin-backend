@@ -60,12 +60,7 @@ class OrderTest extends TestCase
                 'city',
                 'created_at',
                 'updated_at',
-                // 'order_id_array',
-                // 'item_id_array',
-                // 'item_price_array',
-                // 'item_qty_array',
-                // 'created_at',
-                // 'updated_at'
+                'Orderitem'
             ]
         ]);
         $json = $res->json();//1 is id
