@@ -220,11 +220,10 @@ class OrderTest extends TestCase
     }
     
     /** @test */
-    public function store_last_name_length_0_will_occur_validation_error()
+    public function store_last_name_length_0_will_no_validation_error()
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $this->expectException(ValidationException::class);
         $res = $this->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
@@ -238,6 +237,7 @@ class OrderTest extends TestCase
             'item_qty_array'=>[3],
             'item_price_array'=>[999]
         ]);
+        $res->assertStatus(201);
     }
     
     /** @test */
@@ -405,11 +405,10 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function store_address2_length_0_will_occur_validation_error()
+    public function store_address2_length_0_will_no_validation_error()
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $this->expectException(ValidationException::class);
         $res = $this->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
@@ -423,6 +422,7 @@ class OrderTest extends TestCase
             'item_qty_array'=>[3],
             'item_price_array'=>[999]
         ]);
+        $res->assertStatus(201);
     }
     
     /** @test */
@@ -590,11 +590,10 @@ class OrderTest extends TestCase
     }
     
     /** @test */
-    public function store_state_length_0_will_occur_validation_error()
+    public function store_state_length_0_will_no_validation_error()
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $this->expectException(ValidationException::class);
         $res = $this->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
@@ -608,6 +607,7 @@ class OrderTest extends TestCase
             'item_qty_array'=>[3],
             'item_price_array'=>[999]
         ]);
+        $res->assertStatus(201);
     }
     
     /** @test */
