@@ -17,11 +17,11 @@ class CreateOrdersTable extends Migration
             $table->bigIncrements('id');
             $table->integer('total_price')->unsigned();
             $table->string('first_name', 255);
-            $table->string('last_name', 255);
+            $table->string('last_name', 255)->nullable();
             $table->string('address1', 255);
-            $table->string('address2', 255);
+            $table->string('address2', 255)->nullable();
             $table->string('country', 255);
-            $table->string('state', 255);
+            $table->string('state', 255)->nullable();
             $table->string('city', 255);
             $table->timestamps();
         });
