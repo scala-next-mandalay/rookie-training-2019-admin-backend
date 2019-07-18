@@ -362,17 +362,17 @@ class ItemTest extends TestCase
     }
     
     /** @test */
-    public function store_image_length_0_will_occur_validation_error()
+    public function store_image_length_0_will_no_validation_error()
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $this->expectException(ValidationException::class);
         $res = $this->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 999,
             'image' => '',
             'category_id' => $category->id
-        ]);
+        ]); 
+        $res->assertStatus(201);
     }
     
     /** @test */
@@ -585,11 +585,10 @@ class ItemTest extends TestCase
     }
     
     /** @test */
-    public function update_image_length_0_will_occur_validation_error()
+    public function update_image_length_0_will_no_validation_error()
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $this->expectException(ValidationException::class);
         $row = factory(Item::class)->create();
         $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
@@ -597,6 +596,7 @@ class ItemTest extends TestCase
             'image' => '',
             'category_id' => $category->id
         ]);
+        $res->assertStatus(200);
     }
     
     /** @test */
@@ -610,7 +610,7 @@ class ItemTest extends TestCase
             'image' => '1',
             'category_id' => $category->id
         ]);
-        $res->assertStatus(200); 
+        $res->assertStatus(200);
     }
     
     /** @test */
