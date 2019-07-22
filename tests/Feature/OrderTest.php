@@ -13,7 +13,7 @@ use Illuminate\Database\QueryException;
 
 class OrderTest extends TestCase
 {
-    //use RefreshDatabase;
+    use RefreshDatabase;
     const API_PATH = '/api/orders';
     const STR255 = '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789ABCDE';
     const STR256 = '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789ABCDEF';
@@ -22,6 +22,75 @@ class OrderTest extends TestCase
      *
      * @return void
      */
+
+        /** @test */
+    public function orders_everyone_can_get_rows()
+    {
+        //echo "This..............................................";
+        $order =  factory(Order::class)->create();
+       $item = factory(Item::class)->create();
+       $exps = factory(Orderitem::class, 2)->create(['order_id' => $order->id,'item_id' => $item->id]);
+       $now = time();
+       $res = $this->get('/api/orders');
+       $res->assertStatus(200);
+       $res->assertExactJson([
+            'data' => [
+                [
+                    'id'=>$order->id,
+                    'total_price'=>$order->total_price,
+                    'first_name'=>$order->first_name,
+                    'last_name'=>$order->last_name,
+                    'address1'=>$order->address1,
+                    'address2'=>$order->address2,
+                    'country'=>$order->country,
+                    'state'=>$order->state,
+                    'city'=>$order->city,                  
+                    'created_at' => $this->toMySqlDateFromJson($order->updated_at),
+                    'updated_at' => $this->toMySqlDateFromJson($order->created_at),
+
+                    'orderitems' => [
+                        [
+                            'id' => $exps[0]->id,
+                            'order_id'=>$order->id,
+                            'item_id'=>$item->id,
+                            'unit_price'=>$exps[0]->unit_price,
+                            'quantity'=>$exps[0]->quantity,           
+                            'created_at' => $this->toMySqlDateFromJson($exps[0]->updated_at),
+                            'updated_at' => $this->toMySqlDateFromJson($exps[0]->created_at),
+                        ],
+                        [
+                            'id' => $exps[1]->id,
+                            'order_id'=>$order->id,
+                            'item_id'=>$item->id,
+                            'unit_price'=>$exps[1]->unit_price,
+                            'quantity'=>$exps[1]->quantity,           
+                            'created_at' => $this->toMySqlDateFromJson($exps[1]->updated_at),
+                            'updated_at' => $this->toMySqlDateFromJson($exps[1]->created_at),
+                        ],
+                    ]
+                ],         
+            ]
+        ]);
+    }
+
+     /** @test */
+    public function orders_are_order_by_id_asc()
+    {
+        //echo "This..............................................";
+        factory(Order::class)->create(['id' => 42]);
+        factory(Order::class)->create(['id' => 8]);
+        factory(Order::class)->create(['id' => 35]);
+        $res = $this->json('GET', self::API_PATH); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(3, 'data');
+        $res->assertJson([
+            'data' => [
+                ['id' => 8],
+                ['id' => 35],
+                ['id' => 42],
+            ]
+        ]);
+    }
     
     //Start store
          /** @test */
@@ -78,7 +147,6 @@ class OrderTest extends TestCase
         $this->assertLessThan(2, time() - strtotime($json['data']['created_at']));//10
         $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//11
 
-        
          $this->assertEquals($json['data']['id'],$json['data']['Orderitem'][0]['order_id']);
          $this->assertEquals($item1->id,$json['data']['Orderitem'][0]['item_id']);
          $this->assertEquals(3,$json['data']['Orderitem'][0]['quantity']);

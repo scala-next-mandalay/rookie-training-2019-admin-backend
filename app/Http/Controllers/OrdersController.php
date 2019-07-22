@@ -9,6 +9,7 @@ use App\Models\Orderitem;
 use App\Http\Requests\Order\StoreOrderRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
 
 class OrdersController extends Controller
 {
@@ -37,4 +38,11 @@ class OrdersController extends Controller
    		return new JsonResource($orderModel);
    	});
    }
+   
+   public function index()
+    {
+      $order=Order::with('orderitems')->get();
+        return JsonResource::collection($order);
+    }
+
 }
