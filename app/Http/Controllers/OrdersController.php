@@ -41,8 +41,15 @@ class OrdersController extends Controller
    
    public function index()
     {
-      $order=Order::with('orderitems')->get();
+      $order=Order::orderBy('id')->get();
         return JsonResource::collection($order);
+    }
+
+    public function show(Order $order): JsonResource
+    {
+      $ord=Order::where('id','=', $order->id)
+         ->get();
+         return JsonResource::collection($ord);
     }
 
 }

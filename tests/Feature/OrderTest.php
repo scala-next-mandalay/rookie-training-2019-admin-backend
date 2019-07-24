@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\Orderitem;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\QueryException;
 
@@ -28,9 +29,6 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $order =  factory(Order::class)->create();
-       $item = factory(Item::class)->create();
-       $exps = factory(Orderitem::class, 2)->create(['order_id' => $order->id,'item_id' => $item->id]);
-       $now = time();
        $res = $this->get('/api/orders');
        $res->assertStatus(200);
        $res->assertExactJson([
@@ -44,30 +42,9 @@ class OrderTest extends TestCase
                     'address2'=>$order->address2,
                     'country'=>$order->country,
                     'state'=>$order->state,
-                    'city'=>$order->city,                  
+                    'city'=>$order->city,           
                     'created_at' => $this->toMySqlDateFromJson($order->updated_at),
                     'updated_at' => $this->toMySqlDateFromJson($order->created_at),
-
-                    'orderitems' => [
-                        [
-                            'id' => $exps[0]->id,
-                            'order_id'=>$order->id,
-                            'item_id'=>$item->id,
-                            'unit_price'=>$exps[0]->unit_price,
-                            'quantity'=>$exps[0]->quantity,           
-                            'created_at' => $this->toMySqlDateFromJson($exps[0]->updated_at),
-                            'updated_at' => $this->toMySqlDateFromJson($exps[0]->created_at),
-                        ],
-                        [
-                            'id' => $exps[1]->id,
-                            'order_id'=>$order->id,
-                            'item_id'=>$item->id,
-                            'unit_price'=>$exps[1]->unit_price,
-                            'quantity'=>$exps[1]->quantity,           
-                            'created_at' => $this->toMySqlDateFromJson($exps[1]->updated_at),
-                            'updated_at' => $this->toMySqlDateFromJson($exps[1]->created_at),
-                        ],
-                    ]
                 ],         
             ]
         ]);
@@ -972,4 +949,57 @@ class OrderTest extends TestCase
         $res->assertStatus(201); 
     }
     // //End Store
+
+    //Start Show
+     /** @test */
+    public function on_show_order_success()
+    {
+        //echo "This..............................................";
+        $exps = factory(Order::class, 3)->create();
+
+        $res = $this->json('GET', self::API_PATH.'/'.$exps[1]->id); 
+        $res->assertStatus(200); 
+        $res->assertExactJson([
+            'data' => [
+                [
+                    'id'=>$exps[1]->id,
+                    'total_price'=>$exps[1]->total_price,
+                    'first_name'=>$exps[1]->first_name,
+                    'last_name'=>$exps[1]->last_name,
+                    'address1'=>$exps[1]->address1,
+                    'address2'=>$exps[1]->address2,
+                    'country'=>$exps[1]->country,
+                    'state'=>$exps[1]->state,
+                    'city'=>$exps[1]->city,           
+                    'created_at' => $this->toMySqlDateFromJson($exps[1]->updated_at),
+                    'updated_at' => $this->toMySqlDateFromJson($exps[1]->created_at)
+            ],
+         ]
+        ]);
+    }
+    
+    /** @test */
+    public function showorder_deletedId_will_occur_error()
+    {
+        //echo "This..............................................";
+        $row = factory(Order::class)->create();
+        $row->delete();
+        
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage('No query results for model [App\Models\Order] '.$row->id);
+        $res = $this->json('GET', self::API_PATH.'/'.$row->id); 
+    }
+    
+    /** @test */
+    public function showorder_notExistsId_will_occur_error()
+    {
+        //echo "This..............................................";
+        $row = factory(Order::class)->create();
+        $errorId = $row->id + 1;
+        
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage('No query results for model [App\Models\Order] '.$errorId);
+        $res = $this->json('GET', self::API_PATH.'/'.$errorId); 
+    }
+//End Show
 }
