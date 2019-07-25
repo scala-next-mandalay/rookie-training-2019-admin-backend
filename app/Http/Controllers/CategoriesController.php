@@ -15,7 +15,7 @@ class CategoriesController extends Controller
     public function index(): ResourceCollection
     {
         return JsonResource::collection(
-            Category::orderBy('id')->get()
+        Category::orderBy('id')->get()
         );
     }
 

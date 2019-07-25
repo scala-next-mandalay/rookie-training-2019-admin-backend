@@ -19,7 +19,6 @@ class Item extends Model
 
     public function category(): BelongsTo
     {
-        //echo $this->belongsTo(Category::class, 'category_id')->toSql().PHP_EOL;
         return $this->belongsTo(Category::class, 'category_id');
     }
 }

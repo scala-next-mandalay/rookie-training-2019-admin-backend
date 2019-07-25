@@ -8,12 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\Orderitem;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\QueryException;
 
 class OrderTest extends TestCase
 {
-    //use RefreshDatabase;
+    use RefreshDatabase;
     const API_PATH = '/api/orders';
     const STR255 = '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789ABCDE';
     const STR256 = '0123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789ABCDEF';
@@ -22,12 +23,100 @@ class OrderTest extends TestCase
      *
      * @return void
      */
+
+        /** @test */
+    public function orders_everyone_can_get_rows()
+    {
+        //echo "This..............................................";
+        $order =  factory(Order::class)->create();
+       $res = $this->get('/api/orders');
+       $res->assertStatus(200);
+       $res->assertExactJson([
+            'data' => [
+                [
+                    'id'=>$order->id,
+                    'total_price'=>$order->total_price,
+                    'first_name'=>$order->first_name,
+                    'last_name'=>$order->last_name,
+                    'address1'=>$order->address1,
+                    'address2'=>$order->address2,
+                    'country'=>$order->country,
+                    'state'=>$order->state,
+                    'city'=>$order->city,           
+                    'created_at' => $this->toMySqlDateFromJson($order->updated_at),
+                    'updated_at' => $this->toMySqlDateFromJson($order->created_at),
+                ],         
+            ]
+        ]);
+    }
+
+     /** @test */
+    public function orders_are_order_by_id_asc()
+    {
+        //echo "This..............................................";
+        factory(Order::class)->create(['id' => 42]);
+        factory(Order::class)->create(['id' => 8]);
+        factory(Order::class)->create(['id' => 35]);
+        $res = $this->json('GET', self::API_PATH); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(3, 'data');
+        $res->assertJson([
+            'data' => [
+                ['id' => 8],
+                ['id' => 35],
+                ['id' => 42],
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function get_11th_to_20th_orderss_if_limit10_offset10_totalSize30()
+    {
+           //echo "This..............................................";
+          $exps =  factory(Order::class, 30)->create();
+          $res = $this->json('GET','/api/orders?start=10');
+          $res->assertJsonCount(10,'data');
+          $res->assertJson([
+              'data' => [
+                  ['id' => $exps[10]->id],//11th
+                  ['id' => $exps[11]->id],
+                  ['id' => $exps[12]->id],
+                  ['id' => $exps[13]->id],
+                  ['id' => $exps[14]->id],
+                  ['id' => $exps[15]->id],
+                  ['id' => $exps[16]->id],
+                  ['id' => $exps[17]->id],
+                  ['id' => $exps[18]->id],
+                  ['id' => $exps[19]->id],//20th
+              ]
+          ]);
+    }
+
+    /** @test */
+    public function get_11th_to_15th_orders_if_limit10_offset10_totalSize15()
+    {
+        //echo "This..............................................";
+        $exps =  factory(Order::class, 15)->create();
+        $res = $this->json('GET', '/api/orders?start=10'); 
+        $res->assertJsonCount(5, 'data');
+        $res->assertJson([
+            'data' => [
+                ['id' => $exps[10]->id],//11th
+                ['id' => $exps[11]->id],
+                ['id' => $exps[12]->id],
+                ['id' => $exps[13]->id],
+                ['id' => $exps[14]->id],//15th
+            ]
+        ]);
+    }
     
     //Start store
          /** @test */
     public function on_store_order_success()
     {
         //echo "This..............................................";
+
+        $order=factory(Order::class)->create();
         $item1 = factory(Item::class)->create();
         $item2 = factory(Item::class)->create();
         $item3 = factory(Item::class)->create();
@@ -41,6 +130,7 @@ class OrderTest extends TestCase
             'country' => 'Myanmar',
             'state' => 'Yaw',
             'city' => 'Htilin',
+            'order_id'=>'$order->id',
             'item_id_array'=>[$item1->id,$item2->id,$item3->id],
             'item_qty_array'=>[3,5,2],
             'item_price_array'=>[1500,1500,2000],
@@ -75,7 +165,6 @@ class OrderTest extends TestCase
         $this->assertLessThan(2, time() - strtotime($json['data']['created_at']));//10
         $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//11
 
-        
          $this->assertEquals($json['data']['id'],$json['data']['Orderitem'][0]['order_id']);
          $this->assertEquals($item1->id,$json['data']['Orderitem'][0]['item_id']);
          $this->assertEquals(3,$json['data']['Orderitem'][0]['quantity']);
@@ -96,6 +185,7 @@ class OrderTest extends TestCase
          $this->assertEquals(2000,$json['data']['Orderitem'][2]['unit_price']);
          $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['created_at']));
          $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['updated_at']));
+
     }
     
     /** @test */
@@ -900,4 +990,57 @@ class OrderTest extends TestCase
         $res->assertStatus(201); 
     }
     // //End Store
+
+    //Start Show
+     /** @test */
+    public function on_show_order_success()
+    {
+        //echo "This..............................................";
+        $exps = factory(Order::class, 3)->create();
+
+        $res = $this->json('GET', self::API_PATH.'/'.$exps[1]->id); 
+        $res->assertStatus(200); 
+        $res->assertExactJson([
+            'data' => [
+                [
+                    'id'=>$exps[1]->id,
+                    'total_price'=>$exps[1]->total_price,
+                    'first_name'=>$exps[1]->first_name,
+                    'last_name'=>$exps[1]->last_name,
+                    'address1'=>$exps[1]->address1,
+                    'address2'=>$exps[1]->address2,
+                    'country'=>$exps[1]->country,
+                    'state'=>$exps[1]->state,
+                    'city'=>$exps[1]->city,           
+                    'created_at' => $this->toMySqlDateFromJson($exps[1]->updated_at),
+                    'updated_at' => $this->toMySqlDateFromJson($exps[1]->created_at)
+            ],
+         ]
+        ]);
+    }
+    
+    /** @test */
+    public function showorder_deletedId_will_occur_error()
+    {
+        //echo "This..............................................";
+        $row = factory(Order::class)->create();
+        $row->delete();
+        
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage('No query results for model [App\Models\Order] '.$row->id);
+        $res = $this->json('GET', self::API_PATH.'/'.$row->id); 
+    }
+    
+    /** @test */
+    public function showorder_notExistsId_will_occur_error()
+    {
+        //echo "This..............................................";
+        $row = factory(Order::class)->create();
+        $errorId = $row->id + 1;
+        
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage('No query results for model [App\Models\Order] '.$errorId);
+        $res = $this->json('GET', self::API_PATH.'/'.$errorId); 
+    }
+//End Show
 }
