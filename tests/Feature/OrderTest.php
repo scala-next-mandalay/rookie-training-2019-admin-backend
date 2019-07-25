@@ -68,6 +68,47 @@ class OrderTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function get_11th_to_20th_orderss_if_limit10_offset10_totalSize30()
+    {
+           //echo "This..............................................";
+          $exps =  factory(Order::class, 30)->create();
+          $res = $this->json('GET','/api/orders?start=10');
+          $res->assertJsonCount(10,'data');
+          $res->assertJson([
+              'data' => [
+                  ['id' => $exps[10]->id],//11th
+                  ['id' => $exps[11]->id],
+                  ['id' => $exps[12]->id],
+                  ['id' => $exps[13]->id],
+                  ['id' => $exps[14]->id],
+                  ['id' => $exps[15]->id],
+                  ['id' => $exps[16]->id],
+                  ['id' => $exps[17]->id],
+                  ['id' => $exps[18]->id],
+                  ['id' => $exps[19]->id],//20th
+              ]
+          ]);
+    }
+
+    /** @test */
+    public function get_11th_to_15th_orders_if_limit10_offset10_totalSize15()
+    {
+        //echo "This..............................................";
+        $exps =  factory(Order::class, 15)->create();
+        $res = $this->json('GET', '/api/orders?start=10'); 
+        $res->assertJsonCount(5, 'data');
+        $res->assertJson([
+            'data' => [
+                ['id' => $exps[10]->id],//11th
+                ['id' => $exps[11]->id],
+                ['id' => $exps[12]->id],
+                ['id' => $exps[13]->id],
+                ['id' => $exps[14]->id],//15th
+            ]
+        ]);
+    }
     
     //Start store
          /** @test */

@@ -18,8 +18,4 @@ class Order extends Model
         'state',
         'city'
     ];
-    public function orderitems()
-    {
-        return $this->hasMany(Orderitem::class);
-    }
 }
