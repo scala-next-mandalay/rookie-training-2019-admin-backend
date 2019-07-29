@@ -52,6 +52,19 @@ class OrdersController extends Controller
             ->take(10)
             ->get();
         }
+        elseif ($request->search) 
+        {
+            $order=Order::orderBy('id')
+            ->where('first_name', 'like', '%' .$request->search. '%')
+            ->orwhere('last_name', 'like', '%' .$request->search. '%')
+            ->orwhere('total_price', 'like', '%' .$request->search. '%')
+            ->orwhere('address1', 'like', '%' .$request->search. '%')
+            ->orwhere('address2', 'like', '%' .$request->search. '%')
+            ->orwhere('country', 'like', '%' .$request->search. '%')
+            ->orwhere('state', 'like', '%' .$request->search. '%')
+            ->orwhere('city', 'like', '%' .$request->search. '%')
+            ->get();
+        }
         else
         {
             $order=Order::orderBy('id')->get(); 
