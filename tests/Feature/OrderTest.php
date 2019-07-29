@@ -74,7 +74,7 @@ class OrderTest extends TestCase
     {
            //echo "This..............................................";
           $exps =  factory(Order::class, 30)->create();
-          $res = $this->json('GET','/api/orders?start=10&&getting=10');
+          $res = $this->json('GET','/api/orders?start=10');
           $res->assertJsonCount(10,'data');
           $res->assertJson([
               'data' => [
@@ -116,7 +116,13 @@ class OrderTest extends TestCase
         $exps = factory(Order::class)->create(['first_name' => 'wai']);
         $exps1 = factory(Order::class)->create(['first_name' => 'mya']);
         $exps2 = factory(Order::class)->create(['city' => 'Myanmar']);
-        $res = $this->json('GET', '/api/orders?search=wai');
+        $exps3 = factory(Order::class)->create(['first_name' => 'phyo']);
+        $exps4 = factory(Order::class)->create(['first_name' => 'ei']);
+        $exps5 = factory(Order::class)->create(['first_name' => 'hsu']);
+        $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
+        $exps7 = factory(Order::class)->create(['first_name' => 'myat']);
+        $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
+        $res = $this->json('GET', '/api/orders?start=0&search=wai');
         $res->assertStatus(200);
        $res->assertExactJson([
             'data' => [
@@ -143,7 +149,13 @@ class OrderTest extends TestCase
         $exps = factory(Order::class)->create(['first_name' => 'wai']);
         $exps1 = factory(Order::class)->create(['first_name' => 'mya']);
         $exps2 = factory(Order::class)->create(['city' => 'Myanmar']);
-        $res = $this->json('GET', '/api/orders?search=mya');
+        $exps3 = factory(Order::class)->create(['first_name' => 'phyo']);
+        $exps4 = factory(Order::class)->create(['first_name' => 'ei']);
+        $exps5 = factory(Order::class)->create(['first_name' => 'hsu']);
+        $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
+        $exps7 = factory(Order::class)->create(['first_name' => 'myint']);
+        $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
+        $res = $this->json('GET', '/api/orders?start=0&search=mya');
         $res->assertStatus(200);
        $res->assertExactJson([
             'data' => [
@@ -175,6 +187,23 @@ class OrderTest extends TestCase
                 ],                
             ]
         ]);
+    }
+
+    /** @test */ 
+    public function no_return_notExists_search()
+    {
+        $exps = factory(Order::class)->create(['first_name' => 'wai']);
+        $exps1 = factory(Order::class)->create(['first_name' => 'mya']);
+        $exps2 = factory(Order::class)->create(['city' => 'Myanmar']);
+        $exps3 = factory(Order::class)->create(['first_name' => 'phyo']);
+        $exps4 = factory(Order::class)->create(['first_name' => 'ei']);
+        $exps5 = factory(Order::class)->create(['first_name' => 'hsu']);
+        $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
+        $exps7 = factory(Order::class)->create(['first_name' => 'myint']);
+        $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
+        $res = $this->json('GET', '/api/orders?start=4&search=mya');
+        $res->assertStatus(200);
+        $res->assertJsonCount(0, 'data');
     }
     
     //Start store
