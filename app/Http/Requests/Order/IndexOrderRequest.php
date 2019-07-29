@@ -25,6 +25,8 @@ class IndexOrderRequest extends FormRequest
     {
         return [
             'start' => 'integer|min:0',
+            'getting' => 'integer|min:0',
+            'search' => 'string|nullable',
         ];
     }
 }

@@ -48,6 +48,7 @@ class OrdersController extends Controller
         {
             $order=Order::orderBy('id')
             ->skip($request->start)
+            //->take($request->getting)
             ->take(10)
             ->get();
         }

@@ -70,11 +70,11 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function get_11th_to_20th_orderss_if_limit10_offset10_totalSize30()
+    public function get_11th_to_20th_orders_if_limit10_offset10_totalSize30()
     {
            //echo "This..............................................";
           $exps =  factory(Order::class, 30)->create();
-          $res = $this->json('GET','/api/orders?start=10');
+          $res = $this->json('GET','/api/orders?start=10&&getting=10');
           $res->assertJsonCount(10,'data');
           $res->assertJson([
               'data' => [
@@ -97,7 +97,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $exps =  factory(Order::class, 15)->create();
-        $res = $this->json('GET', '/api/orders?start=10'); 
+        $res = $this->json('GET', '/api/orders?start=10&&getting=10'); 
         $res->assertJsonCount(5, 'data');
         $res->assertJson([
             'data' => [
