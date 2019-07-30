@@ -70,7 +70,7 @@ class OrderTest extends TestCase
     }
 
     /** @test */
-    public function get_11th_to_20th_orderss_if_limit10_offset10_totalSize30()
+    public function get_11th_to_20th_orders_if_limit10_offset10_totalSize30()
     {
            //echo "This..............................................";
           $exps =  factory(Order::class, 30)->create();
@@ -108,6 +108,102 @@ class OrderTest extends TestCase
                 ['id' => $exps[14]->id],//15th
             ]
         ]);
+    }
+
+    /** @test */
+    public function get_search_orders_list_same_one_row()
+    {
+        $exps = factory(Order::class)->create(['first_name' => 'wai']);
+        $exps1 = factory(Order::class)->create(['first_name' => 'mya']);
+        $exps2 = factory(Order::class)->create(['city' => 'Myanmar']);
+        $exps3 = factory(Order::class)->create(['first_name' => 'phyo']);
+        $exps4 = factory(Order::class)->create(['first_name' => 'ei']);
+        $exps5 = factory(Order::class)->create(['first_name' => 'hsu']);
+        $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
+        $exps7 = factory(Order::class)->create(['first_name' => 'myat']);
+        $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
+        $res = $this->json('GET', '/api/orders?start=0&search=wai');
+        $res->assertStatus(200);
+       $res->assertExactJson([
+            'data' => [
+                [
+                    'id'=>$exps->id,
+                    'total_price'=>$exps->total_price,
+                    'first_name'=>$exps->first_name,
+                    'last_name'=>$exps->last_name,
+                    'address1'=>$exps->address1,
+                    'address2'=>$exps->address2,
+                    'country'=>$exps->country,
+                    'state'=>$exps->state,
+                    'city'=>$exps->city,           
+                    'created_at' => $this->toMySqlDateFromJson($exps->updated_at),
+                    'updated_at' => $this->toMySqlDateFromJson($exps->created_at),
+                ],         
+            ]
+        ]);
+    }
+
+    /** @test */
+    public function get_all_orders_list_same_search_same_two_row()
+    {
+        $exps = factory(Order::class)->create(['first_name' => 'wai']);
+        $exps1 = factory(Order::class)->create(['first_name' => 'mya']);
+        $exps2 = factory(Order::class)->create(['city' => 'Myanmar']);
+        $exps3 = factory(Order::class)->create(['first_name' => 'phyo']);
+        $exps4 = factory(Order::class)->create(['first_name' => 'ei']);
+        $exps5 = factory(Order::class)->create(['first_name' => 'hsu']);
+        $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
+        $exps7 = factory(Order::class)->create(['first_name' => 'myint']);
+        $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
+        $res = $this->json('GET', '/api/orders?start=0&search=mya');
+        $res->assertStatus(200);
+       $res->assertExactJson([
+            'data' => [
+                [
+                    'id'=>$exps1->id,
+                    'total_price'=>$exps1->total_price,
+                    'first_name'=>$exps1->first_name,
+                    'last_name'=>$exps1->last_name,
+                    'address1'=>$exps1->address1,
+                    'address2'=>$exps1->address2,
+                    'country'=>$exps1->country,
+                    'state'=>$exps1->state,
+                    'city'=>$exps1->city,           
+                    'created_at' => $this->toMySqlDateFromJson($exps1->updated_at),
+                    'updated_at' => $this->toMySqlDateFromJson($exps1->created_at),
+                ],
+                [
+                    'id'=>$exps2->id,
+                    'total_price'=>$exps2->total_price,
+                    'first_name'=>$exps2->first_name,
+                    'last_name'=>$exps2->last_name,
+                    'address1'=>$exps2->address1,
+                    'address2'=>$exps2->address2,
+                    'country'=>$exps2->country,
+                    'state'=>$exps2->state,
+                    'city'=>$exps2->city,           
+                    'created_at' => $this->toMySqlDateFromJson($exps2->updated_at),
+                    'updated_at' => $this->toMySqlDateFromJson($exps2->created_at),
+                ],                
+            ]
+        ]);
+    }
+
+    /** @test */ 
+    public function no_return_notExists_search()
+    {
+        $exps = factory(Order::class)->create(['first_name' => 'wai']);
+        $exps1 = factory(Order::class)->create(['first_name' => 'mya']);
+        $exps2 = factory(Order::class)->create(['city' => 'Myanmar']);
+        $exps3 = factory(Order::class)->create(['first_name' => 'phyo']);
+        $exps4 = factory(Order::class)->create(['first_name' => 'ei']);
+        $exps5 = factory(Order::class)->create(['first_name' => 'hsu']);
+        $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
+        $exps7 = factory(Order::class)->create(['first_name' => 'myint']);
+        $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
+        $res = $this->json('GET', '/api/orders?start=4&search=mya');
+        $res->assertStatus(200);
+        $res->assertJsonCount(0, 'data');
     }
     
     //Start store
