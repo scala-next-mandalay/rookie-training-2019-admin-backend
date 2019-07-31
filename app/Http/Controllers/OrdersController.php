@@ -44,31 +44,12 @@ class OrdersController extends Controller
    
     public function index(IndexOrderRequest $request)
     {
-        // if ($request->start) 
-        // {
-        //     $order=Order::orderBy('id')
-        //     ->skip($request->start)
-        //     //->take($request->getting)
-        //     ->take(10)
-        //     ->get();
-        // }
-        // elseif ($request->search) 
-        // {
-        //     $order=Order::orderBy('id')
-        //     ->where('first_name', 'like', '%' .$request->search. '%')
-        //     ->orwhere('last_name', 'like', '%' .$request->search. '%')
-        //     ->orwhere('total_price', 'like', '%' .$request->search. '%')
-        //     ->orwhere('address1', 'like', '%' .$request->search. '%')
-        //     ->orwhere('address2', 'like', '%' .$request->search. '%')
-        //     ->orwhere('country', 'like', '%' .$request->search. '%')
-        //     ->orwhere('state', 'like', '%' .$request->search. '%')
-        //     ->orwhere('city', 'like', '%' .$request->search. '%')
-        //     ->get();
-        // }
+        $builder=Order::query();
+        $builder->orderBy('id');
 
         if ($request->start||$request->search) 
         {
-            $order=Order::orderBy('id')
+            $builder
             ->skip($request->start)
             //->take($request->getting)
             ->take(10)
@@ -79,15 +60,9 @@ class OrdersController extends Controller
             ->orwhere('address2', 'like', '%' .$request->search. '%')
             ->orwhere('country', 'like', '%' .$request->search. '%')
             ->orwhere('state', 'like', '%' .$request->search. '%')
-            ->orwhere('city', 'like', '%' .$request->search. '%')
-            ->get();
+            ->orwhere('city', 'like', '%' .$request->search. '%');
         }
-        else
-        {
-            $order=Order::orderBy('id')->get(); 
-        }
-        
-        return JsonResource::collection($order);
+        return JsonResource::collection($builder->get());
     }
 
     public function show(Order $order): JsonResource

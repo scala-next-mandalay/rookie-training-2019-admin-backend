@@ -261,26 +261,26 @@ class OrderTest extends TestCase
         $this->assertLessThan(2, time() - strtotime($json['data']['created_at']));//10
         $this->assertLessThan(2, time() - strtotime($json['data']['updated_at']));//11
 
-         $this->assertEquals($json['data']['id'],$json['data']['Orderitem'][0]['order_id']);
-         $this->assertEquals($item1->id,$json['data']['Orderitem'][0]['item_id']);
-         $this->assertEquals(3,$json['data']['Orderitem'][0]['quantity']);
-         $this->assertEquals(1500,$json['data']['Orderitem'][0]['unit_price']);
-         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][0]['created_at']));
-         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][0]['updated_at']));
+        $this->assertEquals($json['data']['id'],$json['data']['Orderitem'][0]['order_id']);
+        $this->assertEquals($item1->id,$json['data']['Orderitem'][0]['item_id']);
+        $this->assertEquals(3,$json['data']['Orderitem'][0]['quantity']);
+        $this->assertEquals(1500,$json['data']['Orderitem'][0]['unit_price']);
+        $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][0]['created_at']));
+        $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][0]['updated_at']));
          
         $this->assertEquals($json['data']['id'],$json['data']['Orderitem'][1]['order_id']);
-         $this->assertEquals($item2->id,$json['data']['Orderitem'][1]['item_id']);
-         $this->assertEquals(5,$json['data']['Orderitem'][1]['quantity']);
-         $this->assertEquals(1500,$json['data']['Orderitem'][1]['unit_price']);
-         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][1]['created_at']));
-         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][1]['updated_at']));
+        $this->assertEquals($item2->id,$json['data']['Orderitem'][1]['item_id']);
+        $this->assertEquals(5,$json['data']['Orderitem'][1]['quantity']);
+        $this->assertEquals(1500,$json['data']['Orderitem'][1]['unit_price']);
+        $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][1]['created_at']));
+        $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][1]['updated_at']));
 
         $this->assertEquals($json['data']['id'],$json['data']['Orderitem'][0]['order_id']);
-         $this->assertEquals($item3->id,$json['data']['Orderitem'][2]['item_id']);
-         $this->assertEquals(2,$json['data']['Orderitem'][2]['quantity']);
-         $this->assertEquals(2000,$json['data']['Orderitem'][2]['unit_price']);
-         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['created_at']));
-         $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['updated_at']));
+        $this->assertEquals($item3->id,$json['data']['Orderitem'][2]['item_id']);
+        $this->assertEquals(2,$json['data']['Orderitem'][2]['quantity']);
+        $this->assertEquals(2000,$json['data']['Orderitem'][2]['unit_price']);
+        $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['created_at']));
+        $this->assertLessThan(2, time() - strtotime($json['data']['Orderitem'][2]['updated_at']));
 
     }
     
