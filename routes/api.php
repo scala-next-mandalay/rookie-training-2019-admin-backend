@@ -13,15 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-Route::group([], function () {
-    Route::get('/', function () {
-        return "This endpoint is no problem.";
+Route::middleware('auth:api')->group(function () {
+    Route::get('/autheduser', function () {
+        return response()->json(auth()->user());
     });
-    
+
     Route::ApiResource(
         'items', 
         'ItemsController', 
@@ -38,5 +34,14 @@ Route::group([], function () {
         'OrderItemController', 
         ['except' => ['create', 'edit']]
     );
+
+    Route::post('posttest', function (Request $request) {
+        $data = $request->all();
+        return response()->json($data);
+    });
+});
+
+Route::get('/', function () {
+    return "public endpoint";
 });
 
