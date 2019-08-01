@@ -29,7 +29,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $order =  factory(Order::class)->create();
-       $res = $this->get('/api/orders');
+       $res = $this->withHeaders($this->getAuthHeader())->get('/api/orders');
        $res->assertStatus(200);
        $res->assertExactJson([
             'data' => [
@@ -57,7 +57,7 @@ class OrderTest extends TestCase
         factory(Order::class)->create(['id' => 42]);
         factory(Order::class)->create(['id' => 8]);
         factory(Order::class)->create(['id' => 35]);
-        $res = $this->json('GET', self::API_PATH); 
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH); 
         $res->assertStatus(200);
         $res->assertJsonCount(3, 'data');
         $res->assertJson([
@@ -74,7 +74,7 @@ class OrderTest extends TestCase
     {
            //echo "This..............................................";
           $exps =  factory(Order::class, 30)->create();
-          $res = $this->json('GET','/api/orders?start=10');
+          $res = $this->withHeaders($this->getAuthHeader())->json('GET','/api/orders?start=10');
           $res->assertJsonCount(10,'data');
           $res->assertJson([
               'data' => [
@@ -97,7 +97,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $exps =  factory(Order::class, 15)->create();
-        $res = $this->json('GET', '/api/orders?start=10'); 
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/orders?start=10'); 
         $res->assertJsonCount(5, 'data');
         $res->assertJson([
             'data' => [
@@ -122,7 +122,7 @@ class OrderTest extends TestCase
         $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
         $exps7 = factory(Order::class)->create(['first_name' => 'myat']);
         $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
-        $res = $this->json('GET', '/api/orders?start=0&search=wai');
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/orders?start=0&search=wai');
         $res->assertStatus(200);
        $res->assertExactJson([
             'data' => [
@@ -155,7 +155,7 @@ class OrderTest extends TestCase
         $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
         $exps7 = factory(Order::class)->create(['first_name' => 'myint']);
         $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
-        $res = $this->json('GET', '/api/orders?start=0&search=mya');
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/orders?start=0&search=mya');
         $res->assertStatus(200);
        $res->assertExactJson([
             'data' => [
@@ -201,7 +201,7 @@ class OrderTest extends TestCase
         $exps6 = factory(Order::class)->create(['first_name' => 'thit']);
         $exps7 = factory(Order::class)->create(['first_name' => 'myint']);
         $exps8 = factory(Order::class)->create(['first_name' => 'Htay']);
-        $res = $this->json('GET', '/api/orders?start=4&search=mya');
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/orders?start=4&search=mya');
         $res->assertStatus(200);
         $res->assertJsonCount(0, 'data');
     }
@@ -217,7 +217,7 @@ class OrderTest extends TestCase
         $item2 = factory(Item::class)->create();
         $item3 = factory(Item::class)->create();
        //$order = factory(Order::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 5000,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -289,7 +289,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH);
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH);
     }
     
     /** @test */
@@ -297,7 +297,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $this->expectException(QueryException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -318,7 +318,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => '',
             'last_name' => 'Phyo',
@@ -338,7 +338,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => '1',
             'last_name' => 'Phyo',
@@ -365,7 +365,7 @@ class OrderTest extends TestCase
         //then, confirm exception is occured
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => self::STR256,
             'last_name' => 'Phyo',
@@ -385,7 +385,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
            'total_price' => 55555,
             'first_name' => self::STR255,
             'last_name' => 'Phyo',
@@ -410,7 +410,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => '',
@@ -431,7 +431,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => '1',
@@ -457,7 +457,7 @@ class OrderTest extends TestCase
         //then, confirm exception is occured
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => self::STR256,
@@ -477,7 +477,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => self::STR255,
@@ -503,7 +503,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -523,7 +523,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -550,7 +550,7 @@ class OrderTest extends TestCase
         //then, confirm exception is occured
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -570,7 +570,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
            'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -595,7 +595,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -616,7 +616,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -642,7 +642,7 @@ class OrderTest extends TestCase
         //then, confirm exception is occured
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -662,7 +662,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -688,7 +688,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -708,7 +708,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -735,7 +735,7 @@ class OrderTest extends TestCase
         //then, confirm exception is occured
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -755,7 +755,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
            'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -780,7 +780,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -801,7 +801,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -827,7 +827,7 @@ class OrderTest extends TestCase
         //then, confirm exception is occured
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -847,7 +847,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -873,7 +873,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -893,7 +893,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -920,7 +920,7 @@ class OrderTest extends TestCase
         //then, confirm exception is occured
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -940,7 +940,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
            'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -966,7 +966,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => -1,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -986,7 +986,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 0,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -1008,7 +1008,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -1028,7 +1028,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -1050,7 +1050,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -1070,7 +1070,7 @@ class OrderTest extends TestCase
     {
         //echo "This..............................................";
         $item =  factory(Item::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'total_price' => 55555,
             'first_name' => 'Wai',
             'last_name' => 'Phyo',
@@ -1094,7 +1094,7 @@ class OrderTest extends TestCase
         //echo "This..............................................";
         $exps = factory(Order::class, 3)->create();
 
-        $res = $this->json('GET', self::API_PATH.'/'.$exps[1]->id); 
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH.'/'.$exps[1]->id); 
         $res->assertStatus(200); 
         $res->assertExactJson([
             'data' => [
@@ -1124,7 +1124,7 @@ class OrderTest extends TestCase
         
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage('No query results for model [App\Models\Order] '.$row->id);
-        $res = $this->json('GET', self::API_PATH.'/'.$row->id); 
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH.'/'.$row->id); 
     }
     
     /** @test */
@@ -1136,7 +1136,7 @@ class OrderTest extends TestCase
         
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage('No query results for model [App\Models\Order] '.$errorId);
-        $res = $this->json('GET', self::API_PATH.'/'.$errorId); 
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH.'/'.$errorId); 
     }
 //End Show
 }

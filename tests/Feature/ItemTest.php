@@ -36,7 +36,8 @@ class ItemTest extends TestCase
         $exps = factory(Item::class, 2)->create(['category_id' => $category->id]);
         
         $now = time();
-        $res = $this->get('/api/items'); 
+        //$res = $this->get('/api/items');
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=0'); 
         $res->assertStatus(200); 
         $res->assertExactJson([
             'data' => [
@@ -88,7 +89,8 @@ class ItemTest extends TestCase
         $row3 = factory(Item::class)->create();
        
         
-        $res = $this->get('/api/items'); 
+        //$res = $this->get('/api/items');
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH); 
         $res->assertStatus(200);
         $res->assertJsonCount(2, 'data');
         $res->assertJson([
@@ -106,7 +108,7 @@ class ItemTest extends TestCase
         factory(Item::class)->create(['id' => 1250]);
         factory(Item::class)->create(['id' => 8]);
         factory(Item::class)->create(['id' => 35]);
-        $res = $this->json('GET', self::API_PATH); 
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH); 
         $res->assertStatus(200);
         $res->assertJsonCount(3, 'data');
         $res->assertJson([
@@ -126,7 +128,8 @@ class ItemTest extends TestCase
           $category =  factory(Category::class)->create();
           $exps = factory(Item::class, 30)->create(['category_id' => $category->id]);
           echo "Offset item ......";
-          $res = $this->json('GET','/api/items?offset=10');
+          //$res = $this->json('GET','/api/items?offset=10');
+          $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=10');
           $res->assertJsonCount(10,'data');
           $res->assertJson([
               'data' => [
@@ -151,7 +154,8 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $exps = factory(Item::class, 15)->create(['category_id' => $category->id]);
         
-        $res = $this->json('GET', '/api/items?offset=10'); 
+        //$res = $this->json('GET', '/api/items?offset=10');
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=10'); 
         $res->assertJsonCount(5, 'data');
         $res->assertJson([
             'data' => [
@@ -171,7 +175,8 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $exps = factory(Item::class, 3)->create(['category_id' => $category->id]);
         
-        $res = $this->json('GET', '/api/items?offset=10'); 
+        //$res = $this->json('GET', '/api/items?offset=10');
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=10'); 
         $res->assertJsonCount(0, 'data');
  
     }
@@ -183,7 +188,8 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $exps = factory(Item::class, 3)->create(['category_id' => $category->id]);
         
-        $res = $this->json('GET', self::API_PATH); 
+        //$res = $this->json('GET', self::API_PATH);
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH); 
         $res->assertJsonCount(3, 'data');
     }
 
@@ -197,7 +203,8 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $exps = factory(Item::class, 3)->create(['category_id' => $category->id]);
         
-        $res = $this->json('GET', self::API_PATH.'/'.$exps[1]->id); 
+        //$res = $this->json('GET', self::API_PATH.'/'.$exps[1]->id);
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH.'/'.$exps[1]->id); 
         $res->assertStatus(200); 
         $res->assertExactJson([
             'data' => [
@@ -222,7 +229,8 @@ class ItemTest extends TestCase
         
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage('No query results for model [App\Models\Item] '.$row->id);
-        $res = $this->json('GET', self::API_PATH.'/'.$row->id); 
+        //$res = $this->json('GET', self::API_PATH.'/'.$row->id);
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH.'/'.$row->id); 
     }
     
     /** @test */
@@ -234,7 +242,8 @@ class ItemTest extends TestCase
         
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage('No query results for model [App\Models\Item] '.$errorId);
-        $res = $this->json('GET', self::API_PATH.'/'.$errorId); 
+        //$res = $this->json('GET', self::API_PATH.'/'.$errorId);
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', self::API_PATH.'/'.$errorId); 
     }
 //End Show
 
@@ -245,7 +254,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $category = factory(Category::class)->create();
         
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 999,
             'image' => 'item1.png',
@@ -278,7 +287,8 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH);
+        //$res = $this->json('POST', self::API_PATH);
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH);
     }
     
     /** @test */
@@ -286,7 +296,7 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $this->expectException(QueryException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 999,
             'image' => 'item1.png',
@@ -300,7 +310,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => '',
             'price' => 999,
             'image' => 'item1.png',
@@ -313,7 +323,7 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => '1',
             'price' => 999,
             'image' => 'item1.png',
@@ -333,7 +343,7 @@ class ItemTest extends TestCase
         //then, confirm exception is occured
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => self::STR256,
             'price' => 999,
             'image' => 'item1.png',
@@ -346,7 +356,7 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => self::STR255,
             'price' => 999,
             'image' => 'item1.png',
@@ -364,7 +374,7 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 999,
             'image' => '',
@@ -378,7 +388,7 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 999,
             'image' => '1',
@@ -397,7 +407,7 @@ class ItemTest extends TestCase
         //then, confirm exception is occured
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 999,
             'image' => self::STR256,
@@ -410,7 +420,7 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 999,
             'image' => self::STR255,
@@ -429,7 +439,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => -1,
             'image' => 'item1.png',
@@ -442,7 +452,7 @@ class ItemTest extends TestCase
     {
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
-        $res = $this->json('POST', self::API_PATH, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('POST', self::API_PATH, [
             'name' => 'item1',
             'price' => 0,
             'image' => 'item1.png',
@@ -459,7 +469,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $categories =  factory(Category::class, 2)->create();
         $row = factory(Item::class)->create(['category_id' => $categories[0]->id]);
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'editedItem',
             'price' => 1234,
             'image' => 'editedItem.png',
@@ -495,7 +505,8 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $this->expectException(ValidationException::class);
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id);
+        //$res = $this->json('PUT', self::API_PATH.'/'.$row->id);
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id);
     }
     
     
@@ -505,7 +516,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $this->expectException(QueryException::class);
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
             'price' => 999,
             'image' => 'item1.png',
@@ -520,7 +531,7 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => '',
             'price' => 999,
             'image' => 'item1.png',
@@ -534,7 +545,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => '1',
             'price' => 999,
             'image' => 'item1.png',
@@ -555,7 +566,7 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => self::STR256,
             'price' => 999,
             'image' => 'item1.png',
@@ -569,7 +580,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => self::STR255,
             'price' => 999,
             'image' => 'item1.png',
@@ -588,7 +599,7 @@ class ItemTest extends TestCase
         //echo "This..............................................";
         $category =  factory(Category::class)->create();
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
             'price' => 999,
             'image' => '',
@@ -602,7 +613,7 @@ class ItemTest extends TestCase
     {
         $category =  factory(Category::class)->create();
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
             'price' => 999,
             'image' => '1',
@@ -621,7 +632,7 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
             'price' => 999,
             'image' => self::STR256,
@@ -634,7 +645,7 @@ class ItemTest extends TestCase
     {
         $category =  factory(Category::class)->create();
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
             'price' => 999,
             'image' => self::STR255,
@@ -653,7 +664,7 @@ class ItemTest extends TestCase
         $category =  factory(Category::class)->create();
         $this->expectException(ValidationException::class);
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
             'price' => -1,
             'image' => 'item1.png',
@@ -666,7 +677,7 @@ class ItemTest extends TestCase
     {
         $category =  factory(Category::class)->create();
         $row = factory(Item::class)->create();
-        $res = $this->json('PUT', self::API_PATH.'/'.$row->id, [
+        $res = $this->withHeaders($this->getAuthHeader())->json('PUT', self::API_PATH.'/'.$row->id, [
             'name' => 'item1',
             'price' => 0,
             'image' => 'item1.png',
@@ -681,7 +692,7 @@ class ItemTest extends TestCase
     public function on_destory_category_success()
     {
         $row = factory(Item::class)->create();
-        $res = $this->json('DELETE', self::API_PATH.'/'.$row->id);
+        $res = $this->withHeaders($this->getAuthHeader())->json('DELETE', self::API_PATH.'/'.$row->id);
         $res->assertStatus(204);
         $this->assertSoftDeleted('items', ['id' => $row->id]);
     }

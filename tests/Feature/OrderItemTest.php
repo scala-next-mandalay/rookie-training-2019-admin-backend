@@ -27,9 +27,10 @@ class OrderItemTest extends TestCase
         $item =  factory(Item::class)->create();
         $exps = factory(Orderitem::class, 2)->create(['order_id' => $order->id,'item_id' => $item->id]);
         $exps1 = factory(Orderitem::class, 2)->create(['order_id' => $order1->id,'item_id' => $item->id]);
-       $res = $this->get('/api/orderitems?order_id='.$order->id);
-       $res->assertStatus(200);
-       $res->assertExactJson([
+       //$res = $this->get('/api/orderitems?order_id='.$order->id);
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/orderitems?order_id='.$order->id);
+        $res->assertStatus(200);
+        $res->assertExactJson([
             'data' => [
                 [
                     'id' => $order->id,
@@ -79,7 +80,8 @@ class OrderItemTest extends TestCase
         $orderid1 =  factory(Orderitem::class)->create();
         $orderid2 =  factory(Orderitem::class)->create(['order_id'=>$order->id]);
         $orderid3 =  factory(Orderitem::class)->create();
-        $res = $this->json('GET', '/api/orderitems?order_id='.$order->id); 
+        //$res = $this->json('GET', '/api/orderitems?order_id='.$order->id);
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/orderitems?order_id='.$order->id); 
         $res->assertStatus(200);
         $res->assertJsonCount(1, 'data');
         $res->assertJson([
@@ -97,7 +99,7 @@ class OrderItemTest extends TestCase
     public function no_return_no_required_orderId()
     {
         $orderitem =  factory(Orderitem::class)->create();
-        $res = $this->json('GET', '/api/orderitems/'); 
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/orderitems/'); 
         $res->assertStatus(200);
         $res->assertJsonCount(0, 'data');
     }
