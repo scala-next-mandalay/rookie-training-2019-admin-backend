@@ -152,25 +152,16 @@ class ItemTest extends TestCase
     {
            //echo "This..............................................";
           $category =  factory(Category::class)->create();
-          $category1 =  factory(Category::class)->create();
-          $exps = factory(Item::class, 20)->create(['category_id' => $category->id]);
-          $exps1 = factory(Item::class, 20)->create(['category_id' => $category1->id]);
-          echo "Offset item ......";
+          $item1 = factory(Item::class)->create();
+          $item2 = factory(Item::class)->create(['category_id' => $category->id]);
+          $item3 = factory(Item::class)->create();
+          
           //$res = $this->json('GET','/api/items?offset=10');
-          $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=0&category_id='.$category1->id);
-          $res->assertJsonCount(10,'data');
+          $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=0&category_id='.$category->id);
+          $res->assertJsonCount(1,'data');
           $res->assertJson([
               'data' => [
-                  ['id' => $exps1[0]->id],//11th
-                  ['id' => $exps1[1]->id],
-                  ['id' => $exps1[2]->id],
-                  ['id' => $exps1[3]->id],
-                  ['id' => $exps1[4]->id],
-                  ['id' => $exps1[5]->id],
-                  ['id' => $exps1[6]->id],
-                  ['id' => $exps1[7]->id],
-                  ['id' => $exps1[8]->id],
-                  ['id' => $exps1[9]->id],//20th
+                  ['id' => $item2->id],
               ]
           ]);
     }
