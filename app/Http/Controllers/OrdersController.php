@@ -46,17 +46,17 @@ class OrdersController extends Controller
     {
         $builder=Order::query();
         $builder->orderBy('id');
+        $builder->take(10);
 
-        if ($request->start||$request->search) 
+        if ($request->start) {
+            $builder->skip($request->start);
+        }
+
+        if ($request->search) 
         {
             $builder
-            ->skip($request->start)
-            //->take($request->getting)
-            ->take(10)
-            //->where('first_name', 'like', '%' .$request->search. '%')
-            //->orwhere('last_name', 'like', '%' .$request->search. '%')
-            ->whereRaw("Concat(first_name,' ',last_name) LIKE '%".$request->search."%' ")
-            ->orwhereRaw("Concat(first_name,'',last_name) LIKE '%".$request->search."%' ")
+            ->where('first_name', 'like', '%' .$request->search. '%')
+            ->orwhere('last_name', 'like', '%' .$request->search. '%')
             ->orwhere('total_price', 'like', '%' .$request->search. '%')
             ->orwhere('address1', 'like', '%' .$request->search. '%')
             ->orwhere('address2', 'like', '%' .$request->search. '%')
@@ -64,6 +64,8 @@ class OrdersController extends Controller
             ->orwhere('state', 'like', '%' .$request->search. '%')
             ->orwhere('city', 'like', '%' .$request->search. '%');
         }
+
+        //var_dump($builder->toSql());
         return JsonResource::collection($builder->get());
     }
 
