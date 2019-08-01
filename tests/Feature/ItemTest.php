@@ -148,6 +148,25 @@ class ItemTest extends TestCase
     }
 
     /** @test */
+    public function get_items_limit10_equal_category_id_search()
+    {
+           //echo "This..............................................";
+          $category =  factory(Category::class)->create();
+          $item1 = factory(Item::class)->create();
+          $item2 = factory(Item::class)->create(['category_id' => $category->id]);
+          $item3 = factory(Item::class)->create();
+          
+          //$res = $this->json('GET','/api/items?offset=10');
+          $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=0&category_id='.$category->id);
+          $res->assertJsonCount(1,'data');
+          $res->assertJson([
+              'data' => [
+                  ['id' => $item2->id],
+              ]
+          ]);
+    }
+
+    /** @test */
     public function get_11th_to_15th_items_if_limit10_offset10_totalSize15()
     {
         //echo "This..............................................";
