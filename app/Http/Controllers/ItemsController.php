@@ -14,11 +14,20 @@ class ItemsController extends Controller
 {
     public function index(IndexItemsRequest $request): ResourceCollection
     {
-        return JsonResource::collection(
-            Item::with('category')->orderBy('id')
+        $builder = Item::query();
+        $builder->limit(config('const.ITEM_LIMIT'));
+        
+        $builder = Item::with('category')->orderBy('id')
             ->limit(config('const.ITEM_LIMIT'))
-            ->offset($request->offset)
-            ->get()
+            ->offset($request->offset);
+        
+        if ($request->category_id) {
+            $builder->where('category_id','=', $request->category_id);
+        }
+        
+        //var_dump($builder->toSql());
+        return JsonResource::collection(
+            $builder->get()
         );
     }
 

@@ -52,7 +52,7 @@ class OrdersController extends Controller
         $builder->skip($request->start);
 
         if ($request->sortcol && in_array($request->sortcol, self::CONST)) {
-            $sortorder = $request->sortorder ? $request->sortorder : 'asc';
+            $sortorder = (strtoupper($request->sortorder) === 'DESC') ? 'DESC': 'ASC';
             $builder->orderBy($request->sortcol, $sortorder);
         }
         else {

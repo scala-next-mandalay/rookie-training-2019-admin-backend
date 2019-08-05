@@ -25,7 +25,26 @@ class OrderTest extends TestCase
      */
     
     /** @test */
-    public function order_by_id_desc_if_sortcol_does_not_exist()
+    public function order_by_id_asc_if_sortorder_does_not_desc()
+    {
+        factory(Order::class)->create(['id' => 3]);
+        factory(Order::class)->create(['id' => 1]);
+        factory(Order::class)->create(['id' => 2]);
+        $url = self::API_PATH.'?sortorder=;&$';//for SQL Injection
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(3, 'data');
+        $res->assertJson([
+            'data' => [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ]
+        ]);
+    }
+    
+    /** @test */
+    public function order_by_id_asc_if_sortcol_does_not_exist()
     {
         factory(Order::class)->create(['id' => 3]);
         factory(Order::class)->create(['id' => 1]);
