@@ -23,6 +23,94 @@ class OrderTest extends TestCase
      *
      * @return void
      */
+    
+    /** @test */
+    public function order_by_id_desc_if_sortcol_does_not_exist()
+    {
+        factory(Order::class)->create(['id' => 3]);
+        factory(Order::class)->create(['id' => 1]);
+        factory(Order::class)->create(['id' => 2]);
+        $url = self::API_PATH.'?sortcol=notexistscol';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(3, 'data');
+        $res->assertJson([
+            'data' => [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ]
+        ]);
+    }
+    
+    /** @test */
+    public function orders_can_sort_by_first_name_asc()
+    {
+ 
+        factory(Order::class)->create(['first_name' => 'bbb']);
+        factory(Order::class)->create(['first_name' => 'aaa']);
+        factory(Order::class)->create(['first_name' => '03']);
+        factory(Order::class)->create(['first_name' => '222']);
+        $url = self::API_PATH.'?sortcol=first_name';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['first_name' => '03'],
+                ['first_name' => '222'],
+                ['first_name' => 'aaa'],
+                ['first_name' => 'bbb'],
+            ]
+        ]);
+    }
+    
+    /** @test */
+    public function orders_can_sort_by_first_name_desc()
+    {
+ 
+        factory(Order::class)->create(['first_name' => 'bbb']);
+        factory(Order::class)->create(['first_name' => 'aaa']);
+        factory(Order::class)->create(['first_name' => '03']);
+        factory(Order::class)->create(['first_name' => '222']);
+        $url = self::API_PATH.'?sortcol=first_name&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['first_name' => 'bbb'],
+                ['first_name' => 'aaa'],
+                ['first_name' => '222'],
+                ['first_name' => '03'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_last_name_asc()
+    {
+ 
+        factory(Order::class)->create(['last_name' => 'bbb']);
+        factory(Order::class)->create(['last_name' => 'aaa']);
+        factory(Order::class)->create(['last_name' => '03']);
+        factory(Order::class)->create(['last_name' => '222']);
+        $url = self::API_PATH.'?sortcol=last_name';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['last_name' => '03'],
+                ['last_name' => '222'],
+                ['last_name' => 'aaa'],
+                ['last_name' => 'bbb'],
+            ]
+        ]);
+    }
+
+
+       
 
         /** @test */
     public function orders_everyone_can_get_rows()

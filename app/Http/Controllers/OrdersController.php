@@ -11,17 +11,18 @@ use App\Http\Requests\Order\IndexOrderRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Schema;
 
 class OrdersController extends Controller
 {
+    const CONST = ['total_price','first_name','last_name','address1','address2','country','state','city'];
     public function store(StoreOrderRequest $request)
     {
         return \DB::transaction(function() use($request)
         {
             $data=$request->validated();
-            $orderKeys=['total_price','first_name','last_name','address1','address2','country','state','city'];
             $orderArr=[];
-            foreach ($orderKeys as $key) 
+            foreach (self::CONST as $key) 
             {
                 $orderArr[$key]=$data[$key];
             }
@@ -45,13 +46,19 @@ class OrdersController extends Controller
     public function index(IndexOrderRequest $request)
     {
         $builder=Order::query();
-        $builder->orderBy('id');
         $builder->take(10);
+        
+        $start = $request->start ? $request->start : 0;
+        $builder->skip($request->start);
 
-        if ($request->start) {
-            $builder->skip($request->start);
+        if ($request->sortcol && in_array($request->sortcol, self::CONST)) {
+            $sortorder = $request->sortorder ? $request->sortorder : 'asc';
+            $builder->orderBy($request->sortcol, $sortorder);
         }
-
+        else {
+            $builder->orderBy('id');
+        }
+        
         if ($request->search) 
         {
             $builder
@@ -65,7 +72,7 @@ class OrdersController extends Controller
             ->orwhere('city', 'like', '%' .$request->search. '%');
         }
 
-        //var_dump($builder->toSql());
+
         return JsonResource::collection($builder->get());
     }
 
