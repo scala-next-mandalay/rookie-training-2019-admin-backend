@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Schema;
 
 class OrdersController extends Controller
 {
-    const STORE_COLUMNS = ['total_price','first_name','last_name','address1','address2','country','state','city'];
+    //aaa
+    const STORE_COLUMNS = ['total_price','first_name','last_name','address1','address2','country','state','city']; 
+    const SORT_COLUMNS = ['total_price','first_name','address1','address2','country','state','city','created_at']; 
     public function store(StoreOrderRequest $request)
     {
         return \DB::transaction(function() use($request)
@@ -51,8 +53,7 @@ class OrdersController extends Controller
         $start = $request->start ? $request->start : 0;
         $builder->skip($request->start);
 
-        $searchColumns = array_merge(self::STORE_COLUMNS, ['created_at']);
-        if ($request->sortcol && in_array($request->sortcol, $searchColumns)) {
+        if ($request->sortcol && in_array($request->sortcol, self::SORT_COLUMNS)) {
             $sortorder = (strtoupper($request->sortorder) === 'DESC') ? 'DESC': 'ASC';
             $builder->orderBy($request->sortcol, $sortorder);
         }

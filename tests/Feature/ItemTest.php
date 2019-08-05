@@ -127,7 +127,6 @@ class ItemTest extends TestCase
            //echo "This..............................................";
           $category =  factory(Category::class)->create();
           $exps = factory(Item::class, 30)->create(['category_id' => $category->id]);
-          echo "Offset item ......";
           //$res = $this->json('GET','/api/items?offset=10');
           $res = $this->withHeaders($this->getAuthHeader())->json('GET', '/api/items?offset=10');
           $res->assertJsonCount(10,'data');
