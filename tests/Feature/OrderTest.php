@@ -107,28 +107,299 @@ class OrderTest extends TestCase
     }
     
      /** @test */
-    public function orders_can_sort_by_last_name_asc()
+    public function orders_can_sort_by_created_at_asc()
     {
- 
-        factory(Order::class)->create(['last_name' => 'bbb']);
-        factory(Order::class)->create(['last_name' => 'aaa']);
-        factory(Order::class)->create(['last_name' => '03']);
-        factory(Order::class)->create(['last_name' => '222']);
-        $url = self::API_PATH.'?sortcol=last_name';
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:41:57']);
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:43:51']);
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:56:14']);
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:37:42']);
+        $url = self::API_PATH.'?sortcol=created_at';
         $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
         $res->assertStatus(200);
         $res->assertJsonCount(4, 'data');
         $res->assertJson([
             'data' => [
-                ['last_name' => '03'],
-                ['last_name' => '222'],
-                ['last_name' => 'aaa'],
-                ['last_name' => 'bbb'],
+                ['created_at' => '2019-07-30 01:37:42'],
+                ['created_at' => '2019-07-30 01:41:57'],
+                ['created_at' => '2019-07-30 01:43:51'],
+                ['created_at' => '2019-07-30 01:56:14'],
             ]
         ]);
     }
 
-
+     /** @test */
+    public function orders_can_sort_by_created_at_desc()
+    {
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:41:57']);
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:43:51']);
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:56:14']);
+        factory(Order::class)->create(['created_at' => '2019-07-30 01:37:42']);
+        $url = self::API_PATH.'?sortcol=created_at&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['created_at' => '2019-07-30 01:56:14'],
+                ['created_at' => '2019-07-30 01:43:51'],
+                ['created_at' => '2019-07-30 01:41:57'],
+                ['created_at' => '2019-07-30 01:37:42'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_total_price_asc()
+    {
+        factory(Order::class)->create(['total_price' => '4000']);
+        factory(Order::class)->create(['total_price' => '500']);
+        factory(Order::class)->create(['total_price' => '390']);
+        factory(Order::class)->create(['total_price' => '3500']);
+        $url = self::API_PATH.'?sortcol=total_price';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['total_price' => '390'],
+                ['total_price' => '500'],
+                ['total_price' => '3500'],
+                ['total_price' => '4000'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_total_price_desc()
+    {
+        factory(Order::class)->create(['total_price' => '4000']);
+        factory(Order::class)->create(['total_price' => '500']);
+        factory(Order::class)->create(['total_price' => '390']);
+        factory(Order::class)->create(['total_price' => '3500']);
+        $url = self::API_PATH.'?sortcol=total_price&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['total_price' => '4000'],
+                ['total_price' => '3500'],
+                ['total_price' => '500'],
+                ['total_price' => '390'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_address1_asc()
+    {
+        factory(Order::class)->create(['address1' => 'main']);
+        factory(Order::class)->create(['address1' => 'lewe']);
+        factory(Order::class)->create(['address1' => '55 street']);
+        factory(Order::class)->create(['address1' => 'No-9,Block-9,Thiri Condo']);
+        $url = self::API_PATH.'?sortcol=address1';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['address1' => '55 street'],
+                ['address1' => 'lewe'],
+                ['address1' => 'main'],
+                ['address1' => 'No-9,Block-9,Thiri Condo'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_address1_desc()
+    {
+        factory(Order::class)->create(['address1' => 'main']);
+        factory(Order::class)->create(['address1' => 'lewe']);
+        factory(Order::class)->create(['address1' => '55 street']);
+        factory(Order::class)->create(['address1' => 'No-9,Block-9,Thiri Condo']);
+        $url = self::API_PATH.'?sortcol=address1&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['address1' => 'No-9,Block-9,Thiri Condo'],
+                ['address1' => 'main'],
+                ['address1' => 'lewe'],
+                ['address1' => '55 street'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_address2_asc()
+    {
+        factory(Order::class)->create(['address2' => 'Mangular Mandalay']);
+        factory(Order::class)->create(['address2' => 'PGK']);
+        factory(Order::class)->create(['address2' => 'ChanMyaTharZi']);
+        factory(Order::class)->create(['address2' => 'KyukPhyu']);
+        $url = self::API_PATH.'?sortcol=address2';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['address2' => 'ChanMyaTharZi'],
+                ['address2' => 'KyukPhyu'],
+                ['address2' => 'Mangular Mandalay'],
+                ['address2' => 'PGK'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_address2_desc()
+    {
+        factory(Order::class)->create(['address2' => 'Mangular Mandalay']);
+        factory(Order::class)->create(['address2' => 'PGK']);
+        factory(Order::class)->create(['address2' => 'ChanMyaTharZi']);
+        factory(Order::class)->create(['address2' => 'KyukPhyu']);
+        $url = self::API_PATH.'?sortcol=address2&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['address2' => 'PGK'],
+                ['address2' => 'Mangular Mandalay'],
+                ['address2' => 'KyukPhyu'],
+                ['address2' => 'ChanMyaTharZi'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_country_asc()
+    {
+        factory(Order::class)->create(['country' => 'Myanmar']);
+        factory(Order::class)->create(['country' => 'English']);
+        factory(Order::class)->create(['country' => 'China']);
+        factory(Order::class)->create(['country' => 'Japan']);
+        $url = self::API_PATH.'?sortcol=country';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['country' => 'China'],
+                ['country' => 'English'],
+                ['country' => 'Japan'],
+                ['country' => 'Myanmar'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_country_desc()
+    {
+        factory(Order::class)->create(['country' => 'Myanmar']);
+        factory(Order::class)->create(['country' => 'English']);
+        factory(Order::class)->create(['country' => 'China']);
+        factory(Order::class)->create(['country' => 'Japan']);
+        $url = self::API_PATH.'?sortcol=country&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['country' => 'Myanmar'],
+                ['country' => 'Japan'],
+                ['country' => 'English'],
+                ['country' => 'China'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_state_asc()
+    {
+        factory(Order::class)->create(['state' => 'Yangon']);
+        factory(Order::class)->create(['state' => 'MaTuPi']);
+        factory(Order::class)->create(['state' => 'Mandalay']);
+        factory(Order::class)->create(['state' => 'NayPyiTaw']);
+        $url = self::API_PATH.'?sortcol=state';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['state' => 'Mandalay'],
+                ['state' => 'MaTuPi'],
+                ['state' => 'NayPyiTaw'],
+                ['state' => 'Yangon'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_state_desc()
+    {
+        factory(Order::class)->create(['state' => 'Yangon']);
+        factory(Order::class)->create(['state' => 'MaTuPi']);
+        factory(Order::class)->create(['state' => 'Mandalay']);
+        factory(Order::class)->create(['state' => 'NayPyiTaw']);
+        $url = self::API_PATH.'?sortcol=state&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['state' => 'Yangon'],
+                ['state' => 'NayPyiTaw'],
+                ['state' => 'MaTuPi'],
+                ['state' => 'Mandalay'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_city_asc()
+    {
+        factory(Order::class)->create(['city' => 'Yangon']);
+        factory(Order::class)->create(['city' => 'Shan']);
+        factory(Order::class)->create(['city' => 'Mandalay']);
+        factory(Order::class)->create(['city' => 'POL']);
+        $url = self::API_PATH.'?sortcol=city';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['city' => 'Mandalay'],
+                ['city' => 'POL'],
+                ['city' => 'Shan'],
+                ['city' => 'Yangon'],
+            ]
+        ]);
+    }
+    
+     /** @test */
+    public function orders_can_sort_by_city_desc()
+    {
+        factory(Order::class)->create(['city' => 'Yangon']);
+        factory(Order::class)->create(['city' => 'Shan']);
+        factory(Order::class)->create(['city' => 'Mandalay']);
+        factory(Order::class)->create(['city' => 'POL']);
+        $url = self::API_PATH.'?sortcol=city&sortorder=desc';
+        $res = $this->withHeaders($this->getAuthHeader())->json('GET', $url); 
+        $res->assertStatus(200);
+        $res->assertJsonCount(4, 'data');
+        $res->assertJson([
+            'data' => [
+                ['city' => 'Yangon'],
+                ['city' => 'Shan'],
+                ['city' => 'POL'],
+                ['city' => 'Mandalay'],
+            ]
+        ]);
+    }
+    
        
 
         /** @test */

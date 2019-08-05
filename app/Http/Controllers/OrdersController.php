@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Schema;
 
 class OrdersController extends Controller
 {
-    const CONST = ['total_price','first_name','last_name','address1','address2','country','state','city'];
+    const STORE_COLUMNS = ['total_price','first_name','last_name','address1','address2','country','state','city'];
     public function store(StoreOrderRequest $request)
     {
         return \DB::transaction(function() use($request)
         {
             $data=$request->validated();
             $orderArr=[];
-            foreach (self::CONST as $key) 
+            foreach (self::STORE_COLUMNS as $key) 
             {
                 $orderArr[$key]=$data[$key];
             }
@@ -51,7 +51,8 @@ class OrdersController extends Controller
         $start = $request->start ? $request->start : 0;
         $builder->skip($request->start);
 
-        if ($request->sortcol && in_array($request->sortcol, self::CONST)) {
+        $searchColumns = array_merge(self::STORE_COLUMNS, ['created_at']);
+        if ($request->sortcol && in_array($request->sortcol, $searchColumns)) {
             $sortorder = (strtoupper($request->sortorder) === 'DESC') ? 'DESC': 'ASC';
             $builder->orderBy($request->sortcol, $sortorder);
         }
