@@ -14,7 +14,7 @@
         "firebase/php-jwt": "^5.0",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "phpseclib/phpseclib": "^2.0",
+        "phpseclib/phpseclib": "^3.0",
         "spatie/laravel-cors": "^1.5"
     },
     "require-dev": {
